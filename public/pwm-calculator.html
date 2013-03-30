@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <title>phear.</title>
+    <link href="bootstrap.css" rel='stylesheet'>
+    <style>
+      .controls {
+        padding-bottom: 15px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class='container'>
+      <form>
+        <fieldset>
+          <legend>pwm timings (<a href='/'>back</a>)</legend>
+
+          <p>..this is confusing.</p>
+
+          <!--
+          <div class='controls'>
+            <label>globe diameter (cm)</label>
+            <input type="text" value="45.7" id='diameter'>
+            <span class="help-block">note 18" = 45.7cm</span>
+          </div>
+
+          <div class='controls'>
+            <label>distance LED column moves along circumference before refresh (mm)</label>
+            <input type="text" value="2.5" id='distance'>
+          </div>
+
+          <div class='controls'>
+            <label>FPS</label>
+            <input type="text" value='30' id='fps'>
+            <span class="help-block">number of times we redraw the globe per second</span>
+          </div>
+
+          <div class='controls'>
+            <label>clock cyles required to set a pixel color</label>
+            <input type="text" value="3" id='clocks-per-pixel'>
+            <span class="help-block">we're using serial-in, parallel-out shift registers</span>
+          </div>
+
+          <div class='controls'>
+            <label class="checkbox">
+              <input type="checkbox" checked='true' id='rgb'>RGB LEDs?
+            </label>
+          </div>
+
+          <div class='controls'>
+            <label>number of LEDs</label>
+            <input type="text" value=70 id='leds'>
+          </div>
+
+          <div class='controls'>
+            <label>&micro;C processor speed (MHz)</label>
+            <input type="text" value=84 id='speed'>
+          </div>
+
+          <div class='controls'>
+            <label>&micro;C load for LED control</label>
+            <input type="text" id='load' disabled>
+          </div>
+          -->
+
+        </fieldset>
+      </form>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+
+      var update_load = function() {
+        /* input ids available:
+          load, speed, leds, rgb, clocks-per-pixel, fps, distance, diameter
+        */
+        var diameter = $('#diameter').val();
+        var distance = $('#distance').val();
+        var refreshes_per_rev = diameter*Math.PI*10/distance;
+
+        var fps = $('#fps').val();
+        var refreshes_per_sec = fps*refreshes_per_rev;
+
+        var rgb = $('#rgb').is(':checked');
+        var leds = $('#leds').val();
+        var total_pixels = leds;
+        if (rgb) total_pixels*=3;
+
+        var clocks_per_pixel = $('#clocks-per-pixel').val();
+        var clocks_per_refresh = total_pixels*clocks_per_pixel;
+
+        var total_required_clocks_per_sec = clocks_per_refresh*refreshes_per_sec;
+        var speed = $('#speed').val();
+        console.log(total_required_clocks_per_sec);
+        var load = total_required_clocks_per_sec/(speed*Math.pow(10,6));
+        load = load.toString().slice(0,5);
+        $('#load').val(load);
+      };
+
+      $(function() {
+        $('input').change(function() {
+          update_load();
+        });
+        update_load();
+      });
+    </script>
+  </body>
+
+</html>
