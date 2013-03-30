@@ -56,7 +56,7 @@
             <input type="text" value=84 id='speed'>
           </div>
 
-          <div class='controls'>
+          <div class='controls control-group'>
             <label>&micro;C load for LED control</label>
             <input type="text" id='load' disabled>
           </div>
@@ -89,10 +89,19 @@
 
         var total_required_clocks_per_sec = clocks_per_refresh*refreshes_per_sec;
         var speed = $('#speed').val();
-        console.log(total_required_clocks_per_sec);
         var load = total_required_clocks_per_sec/(speed*Math.pow(10,6));
-        load = load.toString().slice(0,5);
-        $('#load').val(load);
+        $('#load').val(load.toString().slice(0,5));
+
+        $('#load').parent('.control-group').removeClass('error warning success');
+        if (load > 0.9) {
+          $('#load').parent('.control-group').addClass('error');
+        } else if (load > 0.6) {
+          $('#load').parent('.control-group').addClass('warning');
+        } else {
+          $('#load').parent('.control-group').addClass('success');
+        }
+
+
       };
 
       $(function() {
